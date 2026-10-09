@@ -47,4 +47,6 @@ seqextract_Green light
 
 register Green_light -2pass -transf=shift -minpairs=10
 
-seqapplyreg Green_light -interp=none -prefix=fotodif_ -framing=min
+# -interp=none conserva las cuentas. En Siril 1.2.6 no puede
+# combinarse con -framing=min, porque ese modo cambia el tamaño.
+seqapplyreg Green_light -interp=none -prefix=fotodif_
