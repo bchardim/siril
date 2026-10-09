@@ -33,9 +33,10 @@
 
 requires 1.2.0
 
+# Siril 1.2.6 aborta el script si una clave de set no existe.
+# core.fits_save_icc aparece solo en versiones posteriores.
 set16bits
 setcompress 0
-set core.fits_save_icc=false
 set core.extension=.fit
 
 convertraw light -out=process
