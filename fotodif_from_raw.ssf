@@ -3,17 +3,16 @@
 # Siril 1.2 o posterior. Camaras Bayer (Canon, Nikon, Sony, Pentax).
 # No sirve para sensores Fuji X-Trans.
 #
-# Directorio de trabajo: la carpeta que contiene solo los RAW de la serie
+# Lee los RAW solo de E:/Frames/SequenceFotodiffIN
 # (CR2, CR3, NEF, ARW, ...). No mezcles darks, flats ni otras noches.
+# Escribe la secuencia para FotoDif en E:/Frames/SequenceFotodiffOUT:
+#   fotodif_Green_light_XXXXX.fit
+# Los FITS intermedios quedan en E:/Frames/SequenceFotodiffIN/process.
+# Borra esa carpeta process antes de volver a lanzar el script.
+# No cargues en FotoDif los light_*.fit ni los Green_light_*.fit.
 #
-# Desde la interfaz: Scripts, directorio de trabajo = carpeta de los RAW.
-# Desde la terminal:
-#   siril-cli -d /ruta/a/los/raw -s fotodif_from_raw.ssf
-#
-# Salida, dentro de esa carpeta:
-#   process/fotodif_Green_light_XXXXX.fit
-# Esos son los FITS que hay que cargar en FotoDif. No uses light_*.fit
-# ni Green_light_*.fit: son el mosaico CFA y el verde sin alinear.
+# Desde la interfaz o la terminal, el directorio de trabajo de Siril da igual:
+#   siril-cli -s fotodif_from_raw.ssf
 #
 # Cada FITS es monocromo, 16 bits, sin compresion, canal verde Bayer
 # (media de los dos fotositos verdes, mitad de resolucion, sin debayer).
@@ -28,7 +27,6 @@
 #
 # Antes de lanzarlo, en Preferencias / RAW deja gamma lineal y el balance
 # de blancos de camara y automatico desactivados. Es el ajuste por defecto.
-# Borra process/ si vuelves a lanzar el script sobre la misma carpeta.
 # No calibra bias, dark ni flat, y no apila.
 
 requires 1.2.0
@@ -39,14 +37,17 @@ set16bits
 setcompress 0
 set core.extension=.fit
 
-convertraw light -out=process
+cd E:/Frames/SequenceFotodiffIN
 
-cd process
+convertraw light -out=E:/Frames/SequenceFotodiffIN/process
+
+cd E:/Frames/SequenceFotodiffIN/process
 
 seqextract_Green light
 
 register Green_light -2pass -transf=shift -minpairs=10
 
 # -interp=none conserva las cuentas. En Siril 1.2.6 no puede
-# combinarse con -framing=min, porque ese modo cambia el tamaño.
-seqapplyreg Green_light -interp=none -prefix=fotodif_
+# combinarse con -framing=min, porque ese modo cambia el tamano.
+# El prefijo con ruta deja solo la secuencia final en SequenceFotodiffOUT.
+seqapplyreg Green_light -interp=none -prefix=E:/Frames/SequenceFotodiffOUT/fotodif_
