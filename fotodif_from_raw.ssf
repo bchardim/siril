@@ -11,8 +11,13 @@
 # Borra esa carpeta process antes de volver a lanzar el script.
 # No cargues en FotoDif los light_*.fit ni los Green_light_*.fit.
 #
-# Desde la interfaz o la terminal, el directorio de trabajo de Siril da igual:
-#   siril-cli -s fotodif_from_raw.ssf
+# Desde la interfaz o la terminal, el directorio de trabajo de Siril da igual.
+# Siril deja en cada FITS la fecha de hoy. Para conservar la fecha del RAW:
+#   fotodif_from_raw.cmd
+# Ese lanzador ejecuta este script y despues fotodif_copy_timestamps.ps1.
+# Si lo arrancas desde el menu Scripts, al terminar ejecuta ese .ps1
+# (esta junto a este archivo). Empareja cada RAW con su FITS mediante
+# process/light_conversion.txt.
 #
 # Cada FITS es monocromo, 16 bits, sin compresion, canal verde Bayer
 # (media de los dos fotositos verdes, mitad de resolucion, sin debayer).
@@ -50,4 +55,7 @@ register Green_light -2pass -transf=shift -minpairs=10
 # -interp=none conserva las cuentas. En Siril 1.2.6 no puede
 # combinarse con -framing=min, porque ese modo cambia el tamano.
 # El prefijo con ruta deja solo la secuencia final en SequenceFotodiffOUT.
+# El indice XXXXX es el de light_XXXXX.fit, el mismo que en light_conversion.txt.
 seqapplyreg Green_light -interp=none -prefix=E:/Frames/SequenceFotodiffOUT/fotodif_
+
+# Fechas: ejecuta fotodif_copy_timestamps.ps1 (junto a este script).
